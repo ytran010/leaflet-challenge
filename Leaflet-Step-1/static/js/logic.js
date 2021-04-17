@@ -68,29 +68,63 @@ d3.json(earthquake_url).then(function(data){
       }
         L.circle([location.coordinates[1], location.coordinates[0]], markerOptions).addTo(myMap);
 
-        var legend = L.control({position: 'bottomright'});
-      legend.onAdd = function (map) {
+      //   var legend = L.control({position: 'bottomright'});
+      // legend.onAdd = function (map) {
 
-        var div = L.DomUtil.create('div', 'info legend');
-        labels = ['<strong>Categories</strong>'],
-        categories = ['-10-10','10-30','30-50','50-70','70-90', '90+'];
+      //   var div = L.DomUtil.create('div', 'info legend');
+      //   labels = ['<strong>Categories</strong>'],
+      //   categories = ['-10-10','10-30','30-50','50-70','70-90', '90+'];
 
-        for (var i = 0; i < colors.length; i++) {
+      //   for (var i = 0; i < colors.length; i++) {
           
-                div.innerHTML += 
+      //           div.innerHTML += 
                 
-                  labels.push(
-                      '<i class="circle" style="background:' + Object.keys(colors[i]) + '"></i> ' +
-                  (categories[i] ? categories[i] : '+'));
+      //             labels.push(
+      //                 '<i class="circle" style="background:' + Object.keys(colors[i]) + '"></i> ' +
+      //             (categories[i] ? categories[i] : '+'));
           
 
-        }
-            div.innerHTML = labels.join('<br>');
-        return div;
-      };
-      legend.addTo(map);
+      //   }
+      //       div.innerHTML = labels.join('<br>');
+      //   return div;
+      // };
+      // legend.addTo(map);
+
+      
+      
     }
+
+    // var overlays = {
+    //   "-10-10": colors.green,
+    //   "10-30": colors.gre_yell,
+    //   "30-50": colors.yellow,
+    //   "50-70": colors.orange,
+    //   "70-90": colors.or_red,
+    //   "90+": colors.red
+    // };
+    
+    // Create a control for our layers, add our overlay layers to it
+    // L.control.layers(null, overlays).addTo(myMap);
+    
+    // Create a legend to display information about our map
+    var info = L.control({
+      position: "bottomright"
+    });
+    
+    // When the layer control is added, insert a div with the class of "legend"
+    info.onAdd = function() {
+      var div = L.DomUtil.create("div", "legend");
+      return div;
+    };
+    // Add the info legend to the map
+    info.addTo(myMap);
+    
+    d3.select(".legend").append("text")
+      .html("<p>This is a legend</p><br><p>Second Line<p>")
+      // .append("text")
+      // .text("more text")
 })
+
 
 
 function createFeatures(earthquakeData) {
