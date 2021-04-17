@@ -1,5 +1,5 @@
 var myMap = L.map("map", {
-    center: [37.09, -95.71],
+    center: [37.7749, -122.4194],
     zoom: 13
   });
   
@@ -14,7 +14,7 @@ var myMap = L.map("map", {
     accessToken: API_KEY
   }).addTo(myMap);
 
-  function markerSize(population) {
+  function markerSize(mag) {
     return mag
   }
 
@@ -29,15 +29,16 @@ d3.json(earthquake_url).then(function(data){
       // var mag = info.properties.mag
       // console.log(location.coordinates[0])
       
-        console.log([location.coordinates[0], location.coordinates[1]])
+        // console.log([location.coordinates[0], location.coordinates[1]])
         L.circle([location.coordinates[1], location.coordinates[0]], {
-          fillOpacity: 0.5,
-          radius: markerSize(info.properties.mag)
+          fillOpacity: 0.7,
+          weight: 0.5,
+          radius: markerSize(info.properties.mag * 9000)
         }).addTo(myMap);
       
       
 
-      console.log(info.properties.mag)
+      // console.log(info.properties.mag)
       // console.log(location.coordinates[0])
 
     //   L.circle(data.features.properties[i].location, {
