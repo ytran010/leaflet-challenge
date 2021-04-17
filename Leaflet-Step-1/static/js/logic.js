@@ -10,7 +10,7 @@ var myMap = L.map("map", {
     tileSize: 512,
     maxZoom: 18,
     zoomOffset: -1,
-    id: "mapbox/streets-v11",
+    id: "mapbox/satellite-v9",
     accessToken: API_KEY
   }).addTo(myMap);
 
@@ -22,36 +22,73 @@ var earthquake_url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/
 
 d3.json(earthquake_url).then(function(data){
   console.log(data)
+  
     // createFeatures(data.features)
     for (var i = 0; i < data.features.length; i++) {
+
       var info = data.features[i]
       var location = info.geometry
-      // var mag = info.properties.mag
-      // console.log(location.coordinates[0])
+
+      var colors = {
+        green: '#80ff00	',
+        gre_yell: '#bfff00',
+        yellow: '#ffff00',
+        orange: '#ffbf00',
+        or_red: '#ff8000',
+        red: '#ff4000'
+      };
       
-        // console.log([location.coordinates[0], location.coordinates[1]])
-        L.circle([location.coordinates[1], location.coordinates[0]], {
-          fillOpacity: 0.7,
-          weight: 0.5,
+
+      var markerOptions = {
+        fillOpacity: 0.2,
+          weight: 1,
+          color: 'black',
           radius: markerSize(info.properties.mag * 9000)
-        }).addTo(myMap);
-      
-      
+          
+      }
+      switch(true) {
+        case (location.coordinates[2]<10):
+          markerOptions.color = colors.green;
+          break;
+        case (location.coordinates[2]<30):
+          markerOptions.color = colors.gre_yell;
+          break;
+        case (location.coordinates[2]<50):
+          markerOptions.color = colors.yellow;
+          break;
+        case (location.coordinates[2]<70):
+          markerOptions.color = colors.orange;
+          break;
+        case (location.coordinates[2]<90):
+          markerOptions.color = colors.or_red;
+          break;
+        default:
+          markerOptions.color = colors.red;
+          break;
+      }
+        L.circle([location.coordinates[1], location.coordinates[0]], markerOptions).addTo(myMap);
 
-      // console.log(info.properties.mag)
-      // console.log(location.coordinates[0])
+        var legend = L.control({position: 'bottomright'});
+      legend.onAdd = function (map) {
 
-    //   L.circle(data.features.properties[i].location, {
-    //     fillOpacity: 0.75,
-    //     color: "white",
-    //     fillColor: "purple",
-    //     // Setting our circle's radius equal to the output of our markerSize function
-    //     // This will make our marker's size proportionate to its population
-    //     radius: markerSize(cities[i].population)
-    //   }).bindPopup("<h1>" + cities[i].name + "</h1> <hr> <h3>Population: " + cities[i].population + "</h3>").addTo(myMap);
-    
-    // console.log(data.features[0].geometry.coordinates[0])
-    // console.log(data)
+        var div = L.DomUtil.create('div', 'info legend');
+        labels = ['<strong>Categories</strong>'],
+        categories = ['-10-10','10-30','30-50','50-70','70-90', '90+'];
+
+        for (var i = 0; i < colors.length; i++) {
+          
+                div.innerHTML += 
+                
+                  labels.push(
+                      '<i class="circle" style="background:' + Object.keys(colors[i]) + '"></i> ' +
+                  (categories[i] ? categories[i] : '+'));
+          
+
+        }
+            div.innerHTML = labels.join('<br>');
+        return div;
+      };
+      legend.addTo(map);
     }
 })
 
@@ -74,9 +111,6 @@ function createFeatures(earthquakeData) {
   // Sending our earthquakes layer to the createMap function
   createMap(earthquakes);
 }
-
-
-
 
 function createMap(earthquakes) {
 
