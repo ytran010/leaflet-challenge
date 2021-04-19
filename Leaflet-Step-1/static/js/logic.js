@@ -29,14 +29,20 @@ d3.json(earthquake_url).then(function(data){
       var info = data.features[i]
       var location = info.geometry
 
-      var colors = {
-        green: '#80ff00	',
-        gre_yell: '#bfff00',
-        yellow: '#ffff00',
-        orange: '#ffbf00',
-        or_red: '#ff8000',
-        red: '#ff4000'
-      };
+      var colors = [
+        // geen
+        '#80ff00', 
+        // gre_yell
+        '#bfff00',
+        // yellow
+        '#ffff00',
+        // orange
+        '#ffbf00',
+        // or_red
+        '#ff8000',
+        // red
+        '#ff4000'
+      ];
       
 
       var markerOptions = {
@@ -48,22 +54,22 @@ d3.json(earthquake_url).then(function(data){
       }
       switch(true) {
         case (location.coordinates[2]<10):
-          markerOptions.color = colors.green;
+          markerOptions.color = colors[0];
           break;
         case (location.coordinates[2]<30):
-          markerOptions.color = colors.gre_yell;
+          markerOptions.color = colors[1];
           break;
         case (location.coordinates[2]<50):
-          markerOptions.color = colors.yellow;
+          markerOptions.color = colors[2];
           break;
         case (location.coordinates[2]<70):
-          markerOptions.color = colors.orange;
+          markerOptions.color = colors[3];
           break;
         case (location.coordinates[2]<90):
-          markerOptions.color = colors.or_red;
+          markerOptions.color = colors[4];
           break;
         default:
-          markerOptions.color = colors.red;
+          markerOptions.color = colors[5];
           break;
       }
         L.circle([location.coordinates[1], location.coordinates[0]], markerOptions).addTo(myMap);
@@ -105,48 +111,87 @@ d3.json(earthquake_url).then(function(data){
     
     // Create a control for our layers, add our overlay layers to it
     // L.control.layers(null, overlays).addTo(myMap);
-    
-    // Create a legend to display information about our map
-    var info = L.control({
-      position: "bottomright"
-    });
-    
-    // When the layer control is added, insert a div with the class of "legend"
-    info.onAdd = function() {
-      var div = L.DomUtil.create("div", "legend");
-      return div;
+    var legend = L.control({position: 'bottomright'});
+    legend.onAdd = function (map) {
+
+      function legendColor(depth) {
+        if (depth > 90) {
+          return colors[5]
+        }
+        else if (depth > 70){
+          return colors[4]
+        }
+        else if (depth > 50){
+          return colors[3]
+        }
+        else if (depth > 30){
+          return colors[2]
+        }
+        else if (depth > 10){
+          return colors[1]
+        }
+        else {
+          return colors[0]
+        }
+      }
+
+    var div = L.DomUtil.create('div', 'info legend');
+    labels = ['<strong>Categories</strong>'],
+    categories = [-10, 10, 30, 50, 70, 90];
+
+    for (var i = 0; i < categories.length; i++) {
+
+            div.innerHTML += 
+            labels.push(
+                '<i class="circle" style="background:' + legendColor(categories[i]) + '"></i> ' +
+            (categories[i] ? categories[i] : '+'));
+
+        }
+        div.innerHTML = labels.join('<br>');
+    return div;
     };
-    // Add the info legend to the map
-    info.addTo(myMap);
+    legend.addTo(myMap);
+    // Create a legend to display information about our map
+    // var info = L.control({
+    //   position: "bottomright"
+    // });
     
-    d3.select(".legend").append("text")
-      .html("<p>This is a legend</p><br><p>Second Line<p>")
-      // .append("text")
-      // .text("more text")
+    // // When the layer control is added, insert a div with the class of "legend"
+    // info.onAdd = function() {
+    //   var div = L.DomUtil.create("div", "legend");
+    //   return div;
+    // };
+    // // Add the info legend to the map
+    // info.addTo(myMap);
+    
+    // d3.select(".legend").append("text")
+    //   .html("<p>This is a legend</p><br><p>Second Line<p>")
+    //   // .append("text")
+    //   // .text("more text")
 })
 
 
 
-function createFeatures(earthquakeData) {
+// function createFeatures(earthquakeData) {
 
-  // Define a function we want to run once for each feature in the features array
-  // Give each feature a popup describing the place and time of the earthquake
-  // function onEachFeature(feature, layer) {
-  //   layer.bindPopup("<h3>" + feature.properties.place +
-  //     "</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
-  // }
+//   // Define a function we want to run once for each feature in the features array
+//   // Give each feature a popup describing the place and time of the earthquake
+//   // function onEachFeature(feature, layer) {
+//   //   layer.bindPopup("<h3>" + feature.properties.place +
+//   //     "</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
+//   // }
 
-  // Create a GeoJSON layer containing the features array on the earthquakeData object
-  // Run the onEachFeature function once for each piece of data in the array
-  var earthquakes = L.geoJSON(earthquakeData, {
-    // onEachFeature: onEachFeature
-  });
+//   // Create a GeoJSON layer containing the features array on the earthquakeData object
+//   // Run the onEachFeature function once for each piece of data in the array
+//   var earthquakes = L.geoJSON(earthquakeData, {
+//     // onEachFeature: onEachFeature
+//   });
 
-  // Sending our earthquakes layer to the createMap function
-  createMap(earthquakes);
-}
+//   // Sending our earthquakes layer to the createMap function
+//   createMap(earthquakes);
+// }
 
-function createMap(earthquakes) {
+// function createMap(earthquakes) {
 
   // var myMap = L.map("map", {
   //   center: [
@@ -201,7 +246,7 @@ function createMap(earthquakes) {
   // L.control.layers(baseMaps, overlayMaps, {
   //   collapsed: false
   // }).addTo(myMap);
-}
+
 
 
   

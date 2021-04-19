@@ -8,3 +8,8 @@ body,
 html {
   height: 100%;
 }
+
+.info {
+  width: 100px;
+  background-color: white;
+}
