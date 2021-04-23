@@ -9,7 +9,16 @@ html {
   height: 100%;
 }
 
-.info {
-  width: 100px;
+.legend {
+  width: 75px;
   background-color: white;
+  padding: 3px
+}
+
+.legend i {
+  padding: 4px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
 }

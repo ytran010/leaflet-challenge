@@ -138,12 +138,26 @@ d3.json(earthquake_url).then(function(data){
     var div = L.DomUtil.create('div', 'info legend');
     labels = ['<strong>Categories</strong>'],
     categories = [-10, 10, 30, 50, 70, 90];
+    var colors = [
+      // geen
+      '#80ff00', 
+      // gre_yell
+      '#bfff00',
+      // yellow
+      '#ffff00',
+      // orange
+      '#ffbf00',
+      // or_red
+      '#ff8000',
+      // red
+      '#ff4000'
+    ];
 
     for (var i = 0; i < categories.length; i++) {
-
-            div.innerHTML += 
+      // class="circle"
+            // div.innerHTML += 
             labels.push(
-                '<i class="circle" style="background:' + legendColor(categories[i]) + '"></i> ' +
+                '<i style="background:' + colors[i] + '"></i> ' +
             (categories[i] ? categories[i] : '+'));
 
         }
